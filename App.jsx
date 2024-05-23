@@ -1,30 +1,52 @@
-import { View, Text ,StyleSheet} from 'react-native';
-function App() {
-  console.log('app is running');
-  return (
-    <>
-      <View className="bg-amber-400" style={styles.container}>
-        <Text>Step One</Text>
-        <Text>
-          Edit{' '}
-          <Text className="text-3xl font-semibold text-red-500">App.tsx</Text>{' '}
-          to change this screen and then come back to see your edits.
-        </Text>
-      </View>
-    </>
-  );
+import React from 'react';
+import addBackgroundImage from './src/components/addBackgroundImage/addBackgroundImage';
+import Game from './src/components/Game/Game';
+import Menu from './src/components/Menu/Menu';
+import About from './src/components/About/About';
+
+class App extends React.Component {
+  state = {
+    screen: 'menu',
+    pausedGameState: null,
+  };
+  changeScreen = screen => {
+    this.setState({screen});
+  };
+  pausedGameHandler = gameState => {
+    this.setState({pausedGameState: gameState});
+  };
+  render() {
+    switch (this.state.screen) {
+      case 'menu':
+        return (
+          <Menu
+            handler={this.changeScreen}
+            resumeButton={this.state.pausedGameState && true}
+          />
+        );
+      case 'game':
+        return (
+          <Game
+            handler={this.changeScreen}
+            paused={this.state.pausedGameState}
+            pauseHandler={this.pausedGameHandler}
+          />
+        );
+      case 'resume':
+        return (
+          <Game
+            handler={this.changeScreen}
+            paused={this.state.pausedGameState}
+            pauseHandler={this.pausedGameHandler}
+            resume={this.state.pausedGameState}
+          />
+        );
+      case 'about':
+        return <About handler={this.changeScreen} />;
+      default:
+        break;
+    }
+  }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-});
-
-export default App;
+export default addBackgroundImage(App);
